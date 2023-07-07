@@ -1,0 +1,15 @@
+version: '3.1'
+
+services:
+  vcsh_postgres:
+    image: postgres:15.3
+    container_name: vcsh_postgres
+    restart: always
+    environment:
+      POSTGRES_DB: dockerdb
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: secret1234
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - 5432:5432
