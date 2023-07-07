@@ -3,7 +3,7 @@ import { AppModule } from './app.module';
 import * as morgan from 'morgan';
 import { ValidationPipe, ClassSerializerInterceptor } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config/dist';
-import { CORS } from './constants/cors';
+import { CORS } from './constants';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -22,7 +22,6 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
   const port = configService.get<number>('PORT');
-  console.log(port);
 
   app.enableCors(CORS);
 
