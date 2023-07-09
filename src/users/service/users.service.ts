@@ -4,7 +4,7 @@ import { UserEntity } from '../entities/users.entity';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { UserDTO, UpdateUserDTO } from '../dto/user.dto';
 import * as bcrypt from 'bcrypt';
-import { ErrorException } from 'src/utils/error.exepction';
+import { ErrorException } from '../../utils/error.exepction';
 import { HttpStatus } from '@nestjs/common/enums';
 
 @Injectable()
