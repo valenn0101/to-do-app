@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProjectsEntity } from '../entity/projects.entity';
 import { ProjectDTO, UpdateProjectDTO } from '../dto/projects.dto';
-import { ErrorException } from 'src/utils/error.exepction';
+import { ErrorException } from '../../utils/error.exepction';
 import { HttpStatus } from '@nestjs/common/enums';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 
