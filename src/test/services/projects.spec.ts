@@ -4,8 +4,9 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { ProjectsEntity } from '../../projects/entity/projects.entity';
 import { ProjectsService } from '../../projects/service/projects.service';
 import { ErrorException } from '../../utils/error.exepction';
-import { DeleteResult, Repository, UpdateResult } from 'typeorm';
+import { Any, DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
+import { ProjectDTO } from '../../projects/dto/projects.dto';
 
 describe('ProjectsService', () => {
   let projectsService: ProjectsService;
@@ -39,6 +40,7 @@ describe('ProjectsService', () => {
       updatedAt: updatedAt,
       name: 'test',
       description: 'test',
+      projectInclude: [],
     };
 
     const savedProject = {
@@ -46,6 +48,7 @@ describe('ProjectsService', () => {
       id: id,
       createdAt: createdAt,
       updatedAt: updatedAt,
+      projectInclude: [],
     };
 
     jest.spyOn(projectsRepository, 'save').mockResolvedValue(savedProject);
@@ -72,6 +75,7 @@ describe('ProjectsService', () => {
         updatedAt: new Date(),
         name: 'test1',
         description: 'test1',
+        projectInclude: [],
       },
       {
         id: uuidv4(),
@@ -79,6 +83,7 @@ describe('ProjectsService', () => {
         updatedAt: new Date(),
         name: 'test2',
         description: 'test2',
+        projectInclude: [],
       },
     ];
     jest.spyOn(projectsRepository, 'find').mockResolvedValue(projects);
@@ -100,12 +105,13 @@ describe('ProjectsService', () => {
 
   it('should return the project with the specified ID', async () => {
     const projectId = 'project-id';
-    const mockProject: ProjectsEntity = {
+    const mockProject = {
       createdAt: new Date(),
       updatedAt: new Date(),
       id: projectId,
       name: 'Test Project',
       description: 'Test Description',
+      projectInclude: undefined,
     };
     jest.spyOn(projectsRepository, 'createQueryBuilder').mockReturnValue({
       where: jest.fn().mockReturnThis(),
@@ -159,6 +165,7 @@ describe('ProjectsService', () => {
       updatedAt: new Date(),
       name: 'test',
       description: 'test',
+      projectInclude: [],
     };
     jest.spyOn(projectsRepository, 'findOne').mockResolvedValue(mockProject);
 

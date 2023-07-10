@@ -1,16 +1,19 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from '../../users/service/users.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository, UpdateResult, DeleteResult } from 'typeorm';
+import { Repository, UpdateResult, DeleteResult, DeepPartial } from 'typeorm';
 import { UserEntity } from '../../users/entities/users.entity';
 import * as bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 import { ErrorException } from '../../utils/error.exepction';
 import { HttpStatus } from '@nestjs/common/enums';
+import { UsersProjectsEntity } from '../../users/entities/usersProjects.entity';
+import { UserToProjectDTO } from '../../users/dto/user.dto';
 
 describe('UsersService', () => {
   let usersService: UsersService;
   let userRepository: Repository<UserEntity>;
+  let userProjectRepository: Repository<UsersProjectsEntity>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -20,12 +23,19 @@ describe('UsersService', () => {
           provide: getRepositoryToken(UserEntity),
           useClass: Repository,
         },
+        {
+          provide: getRepositoryToken(UsersProjectsEntity),
+          useClass: Repository,
+        },
       ],
     }).compile();
 
     usersService = module.get<UsersService>(UsersService);
     userRepository = module.get<Repository<UserEntity>>(
       getRepositoryToken(UserEntity),
+    );
+    userProjectRepository = module.get<Repository<UsersProjectsEntity>>(
+      getRepositoryToken(UsersProjectsEntity),
     );
   });
 
@@ -44,6 +54,7 @@ describe('UsersService', () => {
       firstName: 'John',
       lastName: 'Doe',
       age: 25,
+      userIncludes: [],
     };
 
     const hashedPassword = await bcrypt.hash('secret', 10);
@@ -99,6 +110,7 @@ describe('UsersService', () => {
         firstName: 'John',
         lastName: 'Doe',
         age: 25,
+        userIncludes: [],
       },
       {
         id: uuidv4(),
@@ -110,6 +122,7 @@ describe('UsersService', () => {
         firstName: 'John',
         lastName: 'Doe',
         age: 25,
+        userIncludes: [],
       },
     ];
 
@@ -137,6 +150,7 @@ describe('UsersService', () => {
       firstName: 'John',
       lastName: 'Doe',
       age: 25,
+      userIncludes: [],
     };
 
     jest.spyOn(userRepository, 'createQueryBuilder').mockReturnValue({
@@ -195,6 +209,7 @@ describe('UsersService', () => {
       firstName: 'John',
       lastName: 'Doe',
       age: 25,
+      userIncludes: [],
     };
     jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser);
 
@@ -257,6 +272,48 @@ describe('UsersService', () => {
 
     await expect(usersService.deleteUser(userId)).rejects.toThrow(
       new ErrorException(`Delete User error`, HttpStatus.BAD_REQUEST),
+    );
+  });
+
+  it('should save the user-project relation', async () => {
+    const mockUserToProjectDTO: any = {
+      user: { id: 'user-id' } as UserEntity,
+      project: 'project-id',
+    };
+
+    const savedRelation: DeepPartial<any> = {
+      id: 'relation-id',
+      user: { id: 'user-id' },
+      project: { id: 'project-id' },
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    jest.spyOn(userProjectRepository, 'save').mockResolvedValue(savedRelation);
+
+    const result = await usersService.relationToProject(mockUserToProjectDTO);
+
+    expect(userProjectRepository.save).toHaveBeenCalledWith(
+      mockUserToProjectDTO,
+    );
+    expect(result).toEqual(savedRelation);
+  });
+
+  it('should throw an exception if saving the relation fails', async () => {
+    const mockUserToProjectDTO: any = {
+      user: { id: 'user-id' } as UserEntity,
+      project: 'project-id',
+    };
+
+    jest.spyOn(userProjectRepository, 'save').mockRejectedValue(new Error());
+
+    await expect(
+      usersService.relationToProject(mockUserToProjectDTO),
+    ).rejects.toThrowError(
+      new ErrorException(
+        'Relation to project error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      ),
     );
   });
 });
