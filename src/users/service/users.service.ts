@@ -2,16 +2,19 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../entities/users.entity';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
-import { UserDTO, UpdateUserDTO } from '../dto/user.dto';
+import { UserDTO, UpdateUserDTO, UserToProjectDTO } from '../dto/user.dto';
 import * as bcrypt from 'bcrypt';
 import { ErrorException } from '../../utils/error.exepction';
 import { HttpStatus } from '@nestjs/common/enums';
+import { UsersProjectsEntity } from '../entities/usersProjects.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+    @InjectRepository(UsersProjectsEntity)
+    private readonly userProjectRepository: Repository<UsersProjectsEntity>,
   ) {}
 
   public async createUser(body: UserDTO): Promise<UserEntity> {
@@ -65,6 +68,8 @@ export class UsersService {
       const user: UserEntity = await this.userRepository
         .createQueryBuilder('user')
         .where({ id })
+        .leftJoinAndSelect('user.userIncludes', 'userIncludes')
+        .leftJoinAndSelect('userIncludes.project', 'project')
         .getOne();
       if (!user) {
         throw new ErrorException('User not found', HttpStatus.NOT_FOUND);
@@ -112,6 +117,17 @@ export class UsersService {
     } catch (error) {
       throw new ErrorException(
         'Delete User error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  public async relationToProject(body: UserToProjectDTO) {
+    try {
+      return await this.userProjectRepository.save(body);
+    } catch {
+      throw new ErrorException(
+        'Relation to project error',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

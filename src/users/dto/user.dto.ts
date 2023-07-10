@@ -1,4 +1,12 @@
-import { IsNotEmpty, IsString, IsNumber, IsOptional } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsString,
+  IsNumber,
+  IsOptional,
+  IsUUID,
+} from 'class-validator';
+import { UserEntity } from '../entities/users.entity';
+import { ProjectsEntity } from '../../projects/entity/projects.entity';
 
 export class UserDTO {
   @IsNotEmpty()
@@ -50,4 +58,14 @@ export class UpdateUserDTO {
   @IsOptional()
   @IsString()
   password: string;
+}
+
+export class UserToProjectDTO {
+  @IsNotEmpty()
+  @IsUUID()
+  user: UserEntity;
+
+  @IsNotEmpty()
+  @IsUUID()
+  project: ProjectsEntity;
 }

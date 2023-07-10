@@ -20,6 +20,11 @@ export class UsersController {
     return await this.usersService.createUser(body);
   }
 
+  @Post('add-to-project')
+  public async addUserToProject(@Body() body: any) {
+    return await this.usersService.relationToProject(body);
+  }
+
   @Get('all')
   public async findAllUsers() {
     return await this.usersService.findUsers();

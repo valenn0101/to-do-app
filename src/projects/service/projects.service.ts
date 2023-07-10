@@ -56,6 +56,8 @@ export class ProjectsService {
       const project: ProjectsEntity = await this.projectsRepository
         .createQueryBuilder('project')
         .where({ id })
+        .leftJoinAndSelect('project.projectInclude', 'projectInclude')
+        .leftJoinAndSelect('projectInclude.user', 'user')
         .getOne();
       if (!project) {
         throw new ErrorException('Project not found', HttpStatus.NOT_FOUND);
