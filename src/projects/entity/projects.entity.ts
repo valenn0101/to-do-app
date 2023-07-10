@@ -1,5 +1,6 @@
-import { IProject } from 'src/interface/projects.interface';
-import { BaseEntity, Column, Entity } from 'typeorm';
+import { IProject } from '../../interface/projects.interface';
+import { Column, Entity } from 'typeorm';
+import { BaseEntity } from '../../config/base.entity';
 
 @Entity({ name: 'projects' })
 export class ProjectsEntity extends BaseEntity implements IProject {
