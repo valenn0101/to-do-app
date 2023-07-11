@@ -58,6 +58,7 @@ export class ProjectsService {
         .where({ id })
         .leftJoinAndSelect('project.projectInclude', 'projectInclude')
         .leftJoinAndSelect('projectInclude.user', 'user')
+        .leftJoinAndSelect('project.tasks', 'tasks')
         .getOne();
       if (!project) {
         throw new ErrorException('Project not found', HttpStatus.NOT_FOUND);
