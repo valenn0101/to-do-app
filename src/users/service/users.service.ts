@@ -122,6 +122,25 @@ export class UsersService {
     }
   }
 
+  public async findBy({ key, value }: { key: keyof UserDTO; value: any }) {
+    try {
+      const user = await this.userRepository
+        .createQueryBuilder('user')
+        .addSelect('user.password')
+        .where({ [key]: value })
+        .getOne();
+      if (!user) {
+        throw new ErrorException('User not found', HttpStatus.NOT_FOUND);
+      }
+      return user;
+    } catch (error) {
+      throw new ErrorException(
+        'Find User error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   public async relationToProject(body: UserToProjectDTO) {
     try {
       return await this.userProjectRepository.save(body);
