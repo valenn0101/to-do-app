@@ -41,6 +41,7 @@ describe('ProjectsService', () => {
       name: 'test',
       description: 'test',
       projectInclude: [],
+      tasks: [],
     };
 
     const savedProject = {
@@ -49,6 +50,7 @@ describe('ProjectsService', () => {
       createdAt: createdAt,
       updatedAt: updatedAt,
       projectInclude: [],
+      tasks: [],
     };
 
     jest.spyOn(projectsRepository, 'save').mockResolvedValue(savedProject);
@@ -76,6 +78,7 @@ describe('ProjectsService', () => {
         name: 'test1',
         description: 'test1',
         projectInclude: [],
+        tasks: [],
       },
       {
         id: uuidv4(),
@@ -84,6 +87,7 @@ describe('ProjectsService', () => {
         name: 'test2',
         description: 'test2',
         projectInclude: [],
+        tasks: [],
       },
     ];
     jest.spyOn(projectsRepository, 'find').mockResolvedValue(projects);
@@ -166,6 +170,7 @@ describe('ProjectsService', () => {
       name: 'test',
       description: 'test',
       projectInclude: [],
+      tasks: [],
     };
     jest.spyOn(projectsRepository, 'findOne').mockResolvedValue(mockProject);
 
