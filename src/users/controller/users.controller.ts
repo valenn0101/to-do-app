@@ -7,14 +7,19 @@ import {
   Delete,
   Put,
   ParseUUIDPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from '../service/users.service';
 import { UpdateUserDTO, UserDTO } from '../dto/user.dto';
+import { AuthGuard } from '../../auth/guards/auth.guard';
+import { PublicAccess } from '../../auth/decorator/public.decotator';
 
 @Controller('users')
+@UseGuards(AuthGuard)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @PublicAccess()
   @Post('register')
   public async registerUser(@Body() body: UserDTO) {
     return await this.usersService.createUser(body);

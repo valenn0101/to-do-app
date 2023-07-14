@@ -7,11 +7,14 @@ import {
   Put,
   Param,
   ParseUUIDPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { ProjectsService } from '../service/projects.service';
 import { ProjectDTO, UpdateProjectDTO } from '../dto/projects.dto';
+import { AuthGuard } from 'src/auth/guards/auth.guard';
 
 @Controller('projects')
+@UseGuards(AuthGuard)
 export class ProjectsController {
   constructor(private readonly projectsService: ProjectsService) {}
 

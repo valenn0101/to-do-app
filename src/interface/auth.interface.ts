@@ -17,6 +17,7 @@ export interface AuthResponse {
 
 export interface AuthTokenResult {
   sub: string;
+  username: string;
   iat: number;
   exp: number;
 }
@@ -24,4 +25,5 @@ export interface AuthTokenResult {
 export interface IUseToken {
   sub: string;
   isExpired: boolean;
+  username: string;
 }
