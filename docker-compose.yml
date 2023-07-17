@@ -6,7 +6,7 @@ services:
     container_name: vcsh_postgres
     restart: always
     environment:
-      POSTGRES_DB: dockerdb
+      POSTGRES_DB: postgresdb
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: secret1234
     volumes:

@@ -1,8 +1,13 @@
 import { Module } from '@nestjs/common';
+import { APP_FILTER } from '@nestjs/core';
+import { GlobalExceptionFilter } from './middleware/exception.filter';
 import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSourceConfig } from './config/data.source';
+import { ProjectsModule } from './projects/projects.module';
+import { TasksModule } from './tasks/tasks.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -12,6 +17,15 @@ import { DataSourceConfig } from './config/data.source';
     }),
     TypeOrmModule.forRoot({ ...DataSourceConfig }),
     UsersModule,
+    ProjectsModule,
+    TasksModule,
+    AuthModule,
+  ],
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: GlobalExceptionFilter,
+    },
   ],
 })
 export class AppModule {}
